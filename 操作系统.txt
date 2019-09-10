@@ -1,1 +1,164 @@
-���̵��ڴ�ģ��.
+1.回文数
+bool isPalindrome(int x) {
+	if (x < 0) return false;
+	int div = 1;
+	while (x / div >= 10) div *= 10;
+	while (x > 0)
+	{
+		int left = x / div;
+		int right = x % 10;
+		if (left != right) return false;
+		
+		x = (x % div) / 10;
+		div /= 100;
+	}
+	return true;
+
+}
+
+2.两数之和
+vector<int> twosum(vector<int>& nums, int target)
+{
+	unordered_map<int, int> mp;
+	vector<int> ans;
+	for (int i = 0; i < nums.size(); i++)
+	{
+		if (mp.count(target - nums[i]))
+		{
+			ans.push_back(i);
+			ans.push_back(mp[target - nums[i]]);
+		}
+		mp[nums[i]] = i;
+	}
+}
+
+3.三数之和
+vector<vector<int>> threesum(vector<int>& nums, int target)
+{
+	if(nums.size() < 3) return {}
+	sort(nums.begin(), nums.end());
+	vector<vector<int>> res;
+	for(int k = 0; k <nums.size();k++)
+	{
+		int left = k + 1;
+		int right = nums.size()-1;
+		if(nums[k] > 0)  break;
+		if(k > 0 && nums[k] = nums[k-1]) continue;
+		int target = -1 * nums[k];
+		while(left <right)
+		{
+			if(nums[left] + nums[right] == target)
+			{
+				res.push_back({nums[k],nums[left],nums[right]});
+				while(left < right && nums[left] == nums[left + 1]) 
+					left ++;
+				while(left <right && nums[right] == nums[right-1])
+					right--;
+			}
+			else if(nums[left] + nums[right] < target)
+			{
+				left ++;
+			}
+			else
+			{
+				right --;
+			}
+		}
+	}
+	return res;
+}
+
+
+4.二叉树中相距最远的两个节点之间的距离，二叉树每个节点的左右字数高度和的最大值
+int tree_height(Node* root, int& max_distance)
+{
+	int left = root->left ? tree_height(root->left,max_distance) + 1 :0;
+	int right = root->right ? tree_height(root->right,max_distance) + 1:0;
+	max_distance = max(left + right, max_distance);
+	return left > right ? left : right;
+}
+int tree_dis(Node* root)
+{
+	int max_distance = 0;
+	if(root)
+		tree_height(root, max_distance);
+	return max_distance;
+}
+
+
+5.二叉树是否平衡二叉树
+int tree_height(Node* root,bool balanced)
+{
+	int left = root->left ? tree_height(root->left, balanced) + 1:0;
+	if(!balanced) return 0;
+	int right = root->right ? tree_height(root->right, balanced) + 1:0;
+	if(!balanced) return 0;
+	if(abs(left - right) > 1) balanced = false;
+	return left > right ? left : right;
+}
+bool balanced_tree(Node* root)
+{
+	bool balanced == true;
+	if(root) tree_height(root, balanced);
+	return balanced;
+}
+
+
+6.给定两节点求其最近共同父节点
+bool find(Node* root, Node* va, Node* vb,  Node* parent, Node*& result)
+{
+	bool left = false;
+	if(root->left)
+	{
+		left = find(root->left, va, vb, root, result);
+		if(result) return false;
+	}
+	
+	bool right = false;
+	if(root->right)
+	{
+		right = find(root->right, va, vb, root, result);
+		if(result) return false;
+	}
+	
+	int mid = root == left + root == right;
+	int ret = left + right + mid;
+	if(ret == 2)
+		result = (mid != 0 ? parent : root);
+	return ret == 0 ? false : true;
+}
+Node* findParent(Node* root, Node* left, Node*right)
+{
+	Node* result = nullptr;
+	if(root) 
+		find(root, left, right, NULL, result);
+	return result;
+		
+}
+
+
+
+7.字符串相乘
+string multy(string str1, string str2)
+{
+	int size1 = str1.size();
+	int size2 = str2.size();
+	vector<int> vec(size1 + size2, 0);
+	for(int i = size1- 1; i >= 0; i--)
+		for(int j = size2 - 1; j >= 0; j--)
+		{
+			int p1 = i + j, p2 = i + j + 1;
+			int sum = (str1[i] - '0') * (str2[j] - '0') + vec[p2];
+			vec[p1] = sum / 10;
+			vec[p2] = sum % 10;
+			
+		}
+	string ans;
+	for(auto at: vec)
+	{
+		if(!ans.empty() || at != 0)
+			ans.append(at + '0');
+	}
+	return ans;
+	
+}
